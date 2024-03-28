@@ -1,0 +1,67 @@
+version: "2.4"
+
+services:
+  db:
+    image: mariadb:10.7
+    restart: unless-stopped
+    hostname: db
+    container_name: database
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${APPLICATION_DB_NAME}
+      - MYSQL_USER=${APPLICATION_DB_USER}
+      - MYSQL_PASSWORD=${APPLICATION_DB_PASS}
+    volumes:
+      - datadb:/var/lib/mysql
+      - initdb:/docker-entrypoint-initdb.d
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    networks:
+      - project-network
+    healthcheck:
+      test: mysqladmin ping -h db
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  flask_webapp:
+    build:
+      context: applications/flask_webapp/.
+    hostname: flask_webapp
+    container_name: flask_webapp
+    environment:
+      - APPLICATION_ADMIN_ACCOUNT=${APPLICATION_ADMIN_ACCOUNT}
+      - APPLICATION_ADMIN_ACCOUNT_PW=${APPLICATION_ADMIN_ACCOUNT_PW}
+    restart: on-failure
+    ports:
+      - 80:5050
+    volumes:
+      - application_data:/usr/src/app/data
+    networks:
+      - project-network
+    healthcheck:
+      test: curl -f http://flask_webapp:5050
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 50s
+
+  dbadmin:
+    image: adminer
+    container_name: dbadmin
+    hostname: dbadmin
+    restart: unless-stopped
+    ports:
+      - 9002:8080
+    networks:
+      - project-network
+
+volumes:
+  datadb:
+  initdb:
+  application_data:
+
+networks:
+  project-network:
+    name: flask-project-network
