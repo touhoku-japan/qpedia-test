@@ -31,7 +31,19 @@ def logout():
     session.pop('logged_in', None)
     return redirect(url_for('login'))
 
+"""
+
 @c.app.route('/')
 @login_required
 def index():
     return render_template('index.html')
+"""
+
+
+@c.app.route('/upload', methods=['GET','POST'])
+def upload():
+    if request.method == 'POST': #ここからアップロード処理書いてねｗ
+        return ('post ok')
+    elif request.method == 'GET':
+        return render_template('upload.html')
+    return "Unknown method"

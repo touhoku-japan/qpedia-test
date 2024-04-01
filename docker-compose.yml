@@ -38,6 +38,7 @@ services:
       - 80:5050
     volumes:
       - application_data:/usr/src/app/data
+      - .\applications\flask_webapp:/usr/src/app
     networks:
       - project-network
     healthcheck:
