@@ -1,1 +1,2 @@
 .env
+applications/flask_webapp/__pycache__
