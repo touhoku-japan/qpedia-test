@@ -24,5 +24,5 @@ docker-compose up -d
 を実行すれば立ち上がるよ。
 
 ## 動作確認
-うまくいったら次のURLで動作を確認できるよ [http://localhost](http://localhost:80) 
+うまくいったら次のURLで動作を確認できるよ [http://127.0.0.1](http://127.0.0.1:80) 
 
